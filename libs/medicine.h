@@ -1,0 +1,13 @@
+medicineDescriptor createMedicineDescriptor();
+medicineDescriptor getPersonMedicines(person *_person);
+medicine *createMedicine(char name[]);
+void insertMedicine(country *_country, char name[]);
+medicine *getFirstMedicine(medicineDescriptor medicines);
+medicine *getCurrentMedicine(medicineDescriptor medicines);
+medicine *getNextMedicine(medicineDescriptor medicines);
+void moveToNextMedicine(medicineDescriptor &medicines);
+void moveToFirstMedicine(medicineDescriptor &medicines);
+int isMedicineTheLast(medicineDescriptor medicines);
+int isMedicineTheFirst(medicineDescriptor medicines);
+int isEndOfMedicines(medicineDescriptor medicines);
+medicine *getMedicineByNode(medicineDescriptor medicines, int nodes);

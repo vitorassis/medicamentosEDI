@@ -1,0 +1,15 @@
+A partir do arquivo texto com dados referentes ao uso de medicamentos em diversos países, construa uma lista organizada pelos Países, que por sua vez deve haver uma ligação para para os medicamentos utilizados pelos usuários.			
+Utilizar: Listas Duplamente, Simplesmente Encadeadas e também Descritor em sua solução.			
+			
+Após a lista de listas ser montada, deve-se possibilitar:			
+a) A inserção de novos Usuários, respeitando a organização das Listas;			
+b) A exclusão de um determinado País, e consequentemente, dos Usuários;			
+c) A exclusão de um determinado Medicamento, e consequentemente, todos os Usuários que fazem uso do mesmo. E se o País não conter Usuários, a partir dessa ação, também deve ser excluído;			
+d) Gerar relatório ordenado pelo País, em Arquivo Texto, conforme layout:			
+ 	País		
+		Feminino	
+			Exibir todas as pessoas
+		Masculino		
+			Exibir todas as pessoas
+e) Dado um País, exibir todos os Medicamentos utilizados;			
+f) Dado um Medicamento, exibir todos os Usuários.			

@@ -1,0 +1,17 @@
+countryDescriptor createCountryDescriptor();
+country *createCountry(char name[]);
+void insertCountry(countryDescriptor &countries, char name[]);
+country *getFirstCountry(countryDescriptor countries);
+country *getLastCountry(countryDescriptor countries);
+country *getCurrentCountry(countryDescriptor countries);
+country *getNextCountry(countryDescriptor countries);
+country *getPreviousCountry(countryDescriptor countries);
+void moveToNextCountry(countryDescriptor &countries);
+void moveToPreviousCountry(countryDescriptor &countries);
+void moveToFirstCountry(countryDescriptor &countries);
+void moveToLastCountry(countryDescriptor &countries);
+int isCountryTheLast(countryDescriptor countries);
+int isCountryTheFirst(countryDescriptor countries);
+int isEndOfCountries(countryDescriptor countries);
+int isCountriesEmpty(countryDescriptor countries);
+country *getCountryByNode(countryDescriptor countries, int nodes);

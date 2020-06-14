@@ -1,0 +1,12 @@
+personDescriptor createPersonDescriptor();
+personDescriptor getCountryPeople(country *_country);
+person *createPerson(char code[], char gender, char last_buy[]);
+void insertPerson(medicine *_medicine, char code[], char gender, char last_buy[]);
+person *getFirstPerson(personDescriptor people);
+person *getCurrentPerson(personDescriptor people);
+person *getNextPerson(personDescriptor people);
+void moveToNextPerson(personDescriptor &people);
+void moveToFirstPerson(personDescriptor &people);
+int isPersonTheLast(personDescriptor people);
+int isPersonTheFirst(personDescriptor people);
+int isEndOfPeople(personDescriptor people);
