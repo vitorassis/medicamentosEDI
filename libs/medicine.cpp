@@ -82,3 +82,27 @@ medicine *getMedicineByNode(medicineDescriptor medicines, int nodes){
 
     return _medicine;
 }
+
+void getTruncatedName(medicine *_medicine, char name[], int length){
+    strcpy(name, _medicine->name);
+    name[length] = 0;
+}
+
+void removeMedicine(medicineDescriptor &medicines, medicine *toRemove){
+    if(medicines.quantity == 1)
+        medicines = createMedicineDescriptor();
+    else{
+        if(medicines.start == toRemove)
+            medicines.start = toRemove->next;
+        
+        else{
+            moveToFirstMedicine(medicines);
+            while(getCurrentMedicine(medicines)->next != toRemove) moveToNextMedicine(medicines);
+            getCurrentMedicine(medicines)->next = toRemove->next;
+        }
+
+        medicines.quantity--;
+    }
+
+    delete(toRemove);
+}

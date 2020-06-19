@@ -11,3 +11,5 @@ int isMedicineTheLast(medicineDescriptor medicines);
 int isMedicineTheFirst(medicineDescriptor medicines);
 int isEndOfMedicines(medicineDescriptor medicines);
 medicine *getMedicineByNode(medicineDescriptor medicines, int nodes);
+void getTruncatedName(medicine *_medicine, char name[], int length);
+void removeMedicine(medicineDescriptor &medicines, medicine *toRemove);

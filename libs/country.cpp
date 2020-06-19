@@ -2,8 +2,8 @@
 
 countryDescriptor createCountryDescriptor(){
     countryDescriptor countries;
-    countries.start = countries.end = countries.current = NULL;
-    countries.quantity = 0;
+    countries.startSection = countries.endSection = countries.start = countries.end = countries.current = NULL;
+    countries.quantity = countries.sectionQuantity = 0;
 
     return countries;
 }
@@ -53,6 +53,7 @@ void insertCountry(countryDescriptor &countries, char name[]){
 
 				countries.end = _country;
 				countries.quantity++;
+				countries.sectionQuantity++;
 				countries.current = _country;
 			} else {
 				// insercao no inicio ou no meio da lista
@@ -74,6 +75,7 @@ void insertCountry(countryDescriptor &countries, char name[]){
 					}
 					
 					countries.quantity++;
+					countries.sectionQuantity++;
 					countries.current = _country;
 				}
 			}
@@ -87,6 +89,14 @@ country *getFirstCountry(countryDescriptor countries){
 country *getLastCountry(countryDescriptor countries){
     return countries.end;
 }
+
+country *getFirstCountrySection(countryDescriptor countries){
+    return countries.startSection;
+}
+country *getLastCountrySection(countryDescriptor countries){
+    return countries.endSection;
+}
+
 country *getCurrentCountry(countryDescriptor countries){
     return countries.current;
 }
@@ -112,8 +122,15 @@ void moveToFirstCountry(countryDescriptor &countries){
     countries.current = countries.start;
 }
 
+void moveToFirstCountrySection(countryDescriptor &countries){
+	countries.current = countries.startSection;
+}
+
 void moveToLastCountry(countryDescriptor &countries){
     countries.current = countries.end;
+}
+void moveToLastCountrySection(countryDescriptor &countries){
+	countries.current = countries.endSection;
 }
 
 int isCountryTheLast(countryDescriptor countries){
@@ -128,6 +145,10 @@ int isEndOfCountries(countryDescriptor countries){
     return countries.current == NULL;
 }
 
+int isEndOfCountriesSection(countryDescriptor countries){
+	return isEndOfCountries(countries) || countries.current == countries.endSection;
+}
+
 int isCountriesEmpty(countryDescriptor countries){
 	return countries.quantity == 0;
 }
@@ -137,4 +158,73 @@ country *getCountryByNode(countryDescriptor countries, int nodes){
     while(nodes-- > 0) _country = _country->next;
 
 	return _country;
+}
+
+void getCountriesFirstLetters(countryDescriptor countries, char letters[], int &size){
+	size = 0;
+	char actual= 0;
+	moveToFirstCountry(countries);
+
+	while(!isEndOfCountries(countries)){
+		if(actual !=getCurrentCountry(countries)->name[0]){
+			actual = getCurrentCountry(countries)->name[0];
+			letters[size++] = actual;
+		}
+		moveToNextCountry(countries);	
+	}
+	strcat(letters, "\0");
+}
+
+void getCountriesFromFirstLetter(countryDescriptor &countries, char letter){
+	moveToFirstCountry(countries);
+
+	while(letter != getCurrentCountry(countries)->name[0])
+		moveToNextCountry(countries);
+	countries.startSection = getCurrentCountry(countries);
+
+	while(!isEndOfCountries(countries) && letter == getCurrentCountry(countries)->name[0]) 
+		moveToNextCountry(countries);
+	countries.endSection = getCurrentCountry(countries)->prev;
+	
+	moveToFirstCountrySection(countries);
+
+	countries.sectionQuantity = 0;
+	while(!isEndOfCountriesSection(countries)){ 
+		countries.sectionQuantity++;
+		moveToNextCountry(countries);
+	}
+	moveToFirstCountrySection(countries);
+}
+
+country *getCountryByNodeInSection(countryDescriptor countries, int nodes){
+	country *_country = getFirstCountrySection(countries);
+    while(nodes-- > 0) _country = _country->next;
+
+	return _country;	
+}
+
+void removeCountry(countryDescriptor &countries, country *toRemove){
+	while(getCountryPeople(toRemove).quantity > 0)
+		removePerson(toRemove->people, getFirstPerson(getCountryPeople(toRemove)));
+	
+	if(countries.quantity == 1)
+		countries = createCountryDescriptor();
+	else{
+		if(countries.start == toRemove){
+			countries.start = toRemove->next;
+			toRemove->next->prev = NULL;
+		}
+		else if(countries.end == toRemove){
+			countries.end = toRemove->prev;
+			toRemove->prev->next = NULL;
+		}
+		else{
+			toRemove->next->prev = toRemove->prev;
+			toRemove->prev->next = toRemove->next;
+		}
+
+		countries.quantity--;
+	}
+	countries.current = toRemove->next;
+	delete(toRemove);
 }

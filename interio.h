@@ -31,7 +31,7 @@ struct menu{
 	int max;
 	int x;
 	char cursor;
-	menuOption options[20];
+	menuOption options[200];
 	int menu_size;
 	int biggest_option_length;
 };

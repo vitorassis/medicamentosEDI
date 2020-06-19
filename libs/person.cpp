@@ -79,3 +79,25 @@ person *getPersonByNode(personDescriptor people, int nodes){
 
     return _person;
 }
+
+void removePerson(personDescriptor &people, person *toRemove){
+    while(getPersonMedicines(toRemove).quantity > 0)
+        removeMedicine(toRemove->medicines, getFirstMedicine(getPersonMedicines(toRemove)));
+
+    if(people.quantity == 1)
+        people = createPersonDescriptor();
+    else{
+        if(people.start == toRemove)
+            people.start = toRemove->next;
+        
+        else{
+            moveToFirstPerson(people);
+            while(getCurrentPerson(people)->next != toRemove) moveToNextPerson(people);
+            getCurrentPerson(people)->next = toRemove->next;
+        }
+
+        people.quantity--;
+    }
+
+    delete(toRemove);
+}

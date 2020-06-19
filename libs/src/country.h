@@ -9,6 +9,6 @@ struct country
 
 struct countryDescriptor
 {
-    country *start, *end, *current;
-    int quantity;
+    country *start, *end, *current, *startSection, *endSection;
+    int quantity, sectionQuantity;
 };
