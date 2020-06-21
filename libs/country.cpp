@@ -247,19 +247,16 @@ void wipeTrashCountryData(countryDescriptor &countries){
 
 void searchCountries(countryDescriptor &countries, char search[]){
 	moveToFirstCountry(countries);
-	showToast("DBG 00");
-	getch();
-
+	showToast("PROCURANDO...", TOAST_WARNING);
 	while(!isEndOfCountries(countries) && !checkSearch(getCurrentCountry(countries)->name, search)){
 		moveToNextCountry(countries);
-		showToast("DBG 01");
+		
 	}
 	if(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)){
-		showToast("DBG 03");
-		getch();
+		showToast("PAIS ENCONTRADO!", TOAST_SUCCESS);
+		
 		countries.startSection = getCurrentCountry(countries);
-		showToast("DBG 04");
-		getch();
+		
 		while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) {
 			moveToNextCountry(countries);
 		}countries.endSection = getCurrentCountry(countries)->prev;
@@ -275,8 +272,6 @@ void searchCountries(countryDescriptor &countries, char search[]){
 		moveToFirstCountrySection(countries);
 	}
 	else{
-		showToast("DBG 05");
-		getch();
 		countries.endSection = countries.startSection = NULL;
 		countries.sectionQuantity = 0;
 	}

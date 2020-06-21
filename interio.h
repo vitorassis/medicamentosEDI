@@ -326,6 +326,12 @@ struct scrollPane{
 			*		@returnType					void
 			*/
 		void drawPopUpWindow(int w, int h, int &popx, int &popy);
+
+			/**FUNCTION drawPopUpWindow
+			*		@param w					int
+			*		@param h					int
+			*/
+		void removePopUpWindow(int w, int h);
 	// -------------- Conio functions --------------		
 		void gotoxy(int x, int y);
 		void textcolor(int _color);
@@ -1264,6 +1270,16 @@ void drawPopUpWindow(int w, int h, int &popx, int &popy){
 	
 	popx = x;
 	popy = y;
+}
+
+void removePopUpWindow(int w, int h){
+	int x, y;
+	
+	x = (((canvasSetting.width-2)-w)/2) +1;
+	y = (((canvasSetting.height-2)-h)/2) +1;
+	
+	int x2=x+w, y2=y+h;
+	clearCoordinates(x, y, x2, y2);
 }
 
 

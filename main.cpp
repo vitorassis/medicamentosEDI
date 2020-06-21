@@ -230,6 +230,111 @@ void showInsertInterface(countryDescriptor &paises, breadcrumb home){
     }
 }
 
+void showDeleteMedicineInterface(countryDescriptor &paises, person *usuario, breadcrumb del){
+    menu _menu = setMenu(9), submenu = setMenu(15);
+    addMenuOption(submenu, "Remover medicamento");//0
+    addMenuOption(submenu, "", 0);
+    addMenuOption(submenu, "VOLTAR");      //2
+    int opc, subopc;
+    medicineDescriptor medicines = getPersonMedicines(usuario);
+    do{
+        clearMenuOptions(_menu);
+        clearCanvas();
+        showBreadcrumbs(del);
+        printCenter("Medicamento:", 7);
+        while(!isEndOfMedicines(medicines)){
+            addMenuOption(_menu, getCurrentMedicine(medicines)->name);
+            moveToNextMedicine(medicines);
+        }
+        addMenuOption(_menu, "", 0);
+        addMenuOption(_menu, "VOLTAR");
+        opc = showMenu(_menu, opc);
+        if(opc != medicines.quantity+1){
+            subopc = 0;
+
+                int popx, popy;
+                drawPopUpWindow(30, 10, popx, popy);
+
+                printCenter("Acoes:", popy+1);
+                subopc = showMenu(submenu, subopc);
+                switch(subopc){
+                    case 0:
+                        removeMedicine(medicines, getMedicineByNode(medicines, opc));
+                        usuario->medicines = medicines;
+                        wipeTrashCountryData(paises);
+                        break;
+                }
+
+                removePopUpWindow(30, 10);
+        }
+    }while(medicines.quantity > 0 && opc != medicines.quantity+1);
+}
+
+void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcrumb del){
+    menu _menu = setMenu(9), submenu = setMenu(15);
+    addMenuOption(submenu, "Ver medicamentos"); //0
+    addMenuOption(submenu, "Remover pessoa");//1
+    addMenuOption(submenu, "", 0);
+    addMenuOption(submenu, "VOLTAR");      //3
+    int opc, subopc, pagenum = 0, peoplePerPage = 15, peopleinPage=0;
+    personDescriptor people = getCountryPeople(pais);
+    do{
+        peopleinPage=0;
+        clearMenuOptions(_menu);
+        opc = 0;
+        clearCanvas();
+        showBreadcrumbs(del);
+        printCenter("Pessoa:", 7);
+        while(!isEndOfPeople(people) && peopleinPage++ < peoplePerPage){
+            addMenuOption(_menu, getCurrentPerson(people)->code);
+            moveToNextPerson(people);
+        }
+        if(pagenum > 0)
+            addMenuOption(_menu, "ANTERIOR");
+        else
+            addMenuOption(_menu, "", 0);
+
+        if(!isEndOfPeople(people))
+            addMenuOption(_menu, "PROXIMA");
+        else
+            addMenuOption(_menu, "", 0);
+
+        addMenuOption(_menu, "VOLTAR");
+
+        opc = showMenu(_menu, opc);
+        if(opc != peopleinPage+2){
+            if(opc ==  peopleinPage)
+                pagenum --;
+            else if(opc ==  peopleinPage+1)
+                pagenum++;
+
+            else{
+                subopc = 0;
+
+                int popx, popy;
+                drawPopUpWindow(30, 10, popx, popy);
+
+                printCenter("Acoes:", popy+1);
+                subopc = showMenu(submenu, subopc);
+                switch(subopc){
+                    case 0:
+                        showDeleteMedicineInterface(paises, getPersonByNode(people, (peoplePerPage*pagenum)+opc), setBreadcrumb(getPersonByNode(people, (peoplePerPage*pagenum)+opc)->code, &del));
+                        break;
+                    case 1:
+                        removePerson(people, getPersonByNode(people, (peoplePerPage*pagenum)+opc));
+                        pais->people = people;
+                        wipeTrashCountryData(paises);
+                        break;
+                }
+                people.current = getPersonByNode(people, peoplePerPage*pagenum);
+
+                removePopUpWindow(30, 10);
+            }
+        }
+
+    }while(getCountryPeople(pais).quantity > 0 && opc != peopleinPage+2);
+}
+
 void showDeleteCountryInterface(countryDescriptor &paises, breadcrumb home){
     breadcrumb del = setBreadcrumb("Excluir", &home);
     
@@ -275,10 +380,13 @@ void showDeleteCountryInterface(countryDescriptor &paises, breadcrumb home){
                         subopc = showMenu(submenu, subopc);
                         switch(subopc){
                             case 0:
+                                showDeletePersonInterface(paises, getCountryByNodeInSection(paises, opc), setBreadcrumb(getCountryByNodeInSection(paises, opc)->name, &del));
                                 break;
                             case 1:
                                 removeCountry(paises, getCountryByNodeInSection(paises, opc));
                         }
+
+                        removePopUpWindow(30, 10);
                     }
                 }
 
