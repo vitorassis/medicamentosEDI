@@ -7,7 +7,7 @@
 
 #define version "0.1.5"
 
-void showArvoreInterface(countryDescriptor paises, breadcrumb show , int _delete = 0, char delete_node = ' '){
+void showArvoreInterface(countryDescriptor paises, breadcrumb show){
     showBreadcrumbs(setBreadcrumb("Arvore", &show));
 
     menu letterMenu = setMenu(5, 5);
@@ -52,119 +52,87 @@ void showArvoreInterface(countryDescriptor paises, breadcrumb show , int _delete
 
                 countryTecla = showMenu(countryMenu, countryTecla);
 
-                if(_delete && delete_node == 'C'){
-                    if(countryTecla != paises.sectionQuantity){
-                        do{
-                            gotoxy(30, 19);printf("Deseja remover esse pais? (S/N)");
-                            conf = readChar(60, 19);
-                        }while(toupper(conf) != 'N' && toupper(conf) != 'S');
-                        if(toupper(conf) == 'S')
-                            removeCountry(paises, getCountryByNodeInSection(paises, countryTecla));
-                        clearCoordinates(10, 5, 25, canvasSetting.height-5);
-                    }
-                }else
-                    if(countryTecla != paises.sectionQuantity){
-                        country *selectedCountry = getCountryByNodeInSection(paises, countryTecla);
+                if(countryTecla != paises.sectionQuantity){
+                    country *selectedCountry = getCountryByNodeInSection(paises, countryTecla);
 
-                        pessoas = getCountryPeople(selectedCountry);
-                        
-                        do{
-                            peopleInpage = peopleTecla = 0;
-                            clearMenuOptions(peopleMenu);
-                            pessoas.current = getPersonByNode(pessoas, pagePeople*peoplePerPage);
+                    pessoas = getCountryPeople(selectedCountry);
+                    
+                    do{
+                        peopleInpage = peopleTecla = 0;
+                        clearMenuOptions(peopleMenu);
+                        pessoas.current = getPersonByNode(pessoas, pagePeople*peoplePerPage);
 
-                            while(!isEndOfPeople(pessoas) && peopleInpage++ < peoplePerPage){
-                                sprintf(text, "%s (%d)", getCurrentPerson(pessoas)->code, getCurrentPerson(pessoas)->medicines.quantity);
-                                addMenuOption(peopleMenu, text);
-                                moveToNextPerson(pessoas);
-                            }
-                            if(pagePeople > 0)
-                                addMenuOption(peopleMenu, "ANTERIOR");
-                            else
-                                addMenuOption(peopleMenu, "", 0);
-                                
-                            if(!isEndOfPeople(pessoas))
-                                addMenuOption(peopleMenu, "PROXIMA");
-                            else
-                                addMenuOption(peopleMenu, "", 0);
+                        while(!isEndOfPeople(pessoas) && peopleInpage++ < peoplePerPage){
+                            sprintf(text, "%s (%d)", getCurrentPerson(pessoas)->code, getCurrentPerson(pessoas)->medicines.quantity);
+                            addMenuOption(peopleMenu, text);
+                            moveToNextPerson(pessoas);
+                        }
+                        if(pagePeople > 0)
+                            addMenuOption(peopleMenu, "ANTERIOR");
+                        else
+                            addMenuOption(peopleMenu, "", 0);
+                            
+                        if(!isEndOfPeople(pessoas))
+                            addMenuOption(peopleMenu, "PROXIMA");
+                        else
+                            addMenuOption(peopleMenu, "", 0);
 
-                            addMenuOption(peopleMenu, "VOLTAR");
+                        addMenuOption(peopleMenu, "VOLTAR");
 
-                            medicineTecla = 0;
-                            peopleTecla = showMenu(peopleMenu, peopleTecla);
+                        medicineTecla = 0;
+                        peopleTecla = showMenu(peopleMenu, peopleTecla);
 
-                            if(_delete && delete_node == 'P'){
-                                if(peopleTecla < peopleInpage+1){
-                                    do{
-                                        gotoxy(30, 19);printf("Deseja remover essa pessoa? (S/N)");
-                                        conf = readChar(69, 19);
-                                    }while(toupper(conf) != 'N' && toupper(conf) != 'S');
-                                    if(toupper(conf) == 'S')
-                                        removePerson(selectedCountry->people, getPersonByNode(pessoas, (pagePeople*peoplePerPage) + peopleTecla));
-                                    clearCoordinates(25, 5, 63, canvasSetting.height-5);
+                        if(peopleTecla < peopleInpage+1){
+                            if((pagePeople > 0 && peopleTecla < peopleInpage-1) ||
+                            (pagePeople == 0 && peopleTecla < peopleInpage)){
+                                person *selectedPerson = getPersonByNode(pessoas, (pagePeople*peoplePerPage) + peopleTecla);
 
-                                }
-                            }else
-                                if(peopleTecla < peopleInpage+1){
-                                    if(peopleTecla != peopleInpage-1 && peopleTecla != peopleInpage){
-                                        person *selectedPerson = getPersonByNode(pessoas, (pagePeople*peoplePerPage) + peopleTecla);
+                                do{
+                                    clearMenuOptions(medicineMenu);
+                                    remedios = getPersonMedicines(selectedPerson);
 
-
-                                        do{
-                                            clearMenuOptions(medicineMenu);
-                                            remedios = getPersonMedicines(selectedPerson);
-
-                                            while(!isEndOfMedicines(remedios)){
-                                                getTruncatedName(getCurrentMedicine(remedios), text, 20);
-                                                addMenuOption(medicineMenu, text);
-                                                moveToNextMedicine(remedios);
-                                            }
-                                            addMenuOption(medicineMenu, "VOLTAR");
-
-                                            medicineTecla = showMenu(medicineMenu, medicineTecla);
-                                            if(_delete && delete_node == 'M'){
-                                                if(medicineTecla != remedios.quantity){
-                                                    do{
-                                                        gotoxy(30, 19);printf("Deseja remover esse medicamento? (S/N)");
-                                                        conf = readChar(70, 19);
-                                                    }while(toupper(conf) != 'N' && toupper(conf) != 'S');
-                                                    if(toupper(conf) == 'S')
-                                                        removeMedicine(selectedPerson->medicines, getMedicineByNode(remedios, medicineTecla));
-                                                }
-                                            }else{
-                                                clearCoordinates(76, 5, canvasSetting.width-3, canvasSetting.height-5);
-
-                                                if(medicineTecla != remedios.quantity){
-                                                    medicine *selectedMedicine = getMedicineByNode(remedios, medicineTecla);
-
-                                                    gotoxy(80, 10);printf("USUARIO:");
-                                                    gotoxy(77, 11);printf("Pais: %s", selectedCountry);
-                                                    gotoxy(77, 12);printf("Codigo: %s", selectedPerson->code);
-                                                    gotoxy(77, 13);printf("Sexo: %c", selectedPerson->gender);
-                                                    gotoxy(80, 15);printf("REMEDIO:");
-                                                    gotoxy(77, 16);printf("Nome: %s", selectedMedicine->name);
-                                                    gotoxy(77, 17);printf("Ultima Compra: %s", selectedMedicine->last_buy);
-                                                }else
-                                                    clearCoordinates(45, 5, 74, canvasSetting.height-5);
-                                            }
-                                        }while(medicineTecla != remedios.quantity);
-                                    }else{
-                                        if(peopleTecla == peopleInpage-1){
-                                            pagePeople --;
-                                        }else{
-                                            pagePeople ++;
-                                        }clearCoordinates(25, 5, 63, canvasSetting.height-5);
+                                    while(!isEndOfMedicines(remedios)){
+                                        getTruncatedName(getCurrentMedicine(remedios), text, 20);
+                                        addMenuOption(medicineMenu, text);
+                                        moveToNextMedicine(remedios);
                                     }
+                                    addMenuOption(medicineMenu, "VOLTAR");
+
+                                    medicineTecla = showMenu(medicineMenu, medicineTecla);
                                     
-                                }else
-                                    clearCoordinates(25, 5, 63, canvasSetting.height-5);
+                                        clearCoordinates(76, 5, canvasSetting.width-3, canvasSetting.height-5);
 
-                        }while(peopleTecla < peopleInpage+1);
+                                        if(medicineTecla != remedios.quantity){
+                                            medicine *selectedMedicine = getMedicineByNode(remedios, medicineTecla);
 
-                    }else{
-                        clearCoordinates(10, 5, 25, canvasSetting.height-5);
-                    }
-                
+                                            gotoxy(80, 10);printf("USUARIO:");
+                                            gotoxy(77, 11);printf("Pais: %s", selectedCountry);
+                                            gotoxy(77, 12);printf("Codigo: %s", selectedPerson->code);
+                                            gotoxy(77, 13);printf("Sexo: %c", selectedPerson->gender);
+                                            gotoxy(80, 15);printf("REMEDIO:");
+                                            gotoxy(77, 16);printf("Nome: %s", selectedMedicine->name);
+                                            gotoxy(77, 17);printf("Ultima Compra: %s", selectedMedicine->last_buy);
+                                        }else
+                                            clearCoordinates(45, 5, 74, canvasSetting.height-5);
+                                    
+                                }while(medicineTecla != remedios.quantity);
+                            }else{
+                                if(peopleTecla == peopleInpage-1){
+                                    pagePeople --;
+                                }else{
+                                    pagePeople ++;
+                                }clearCoordinates(25, 5, 63, canvasSetting.height-5);
+                            }
+                            
+                        }else
+                            clearCoordinates(25, 5, 63, canvasSetting.height-5);
+
+                    }while(peopleTecla < peopleInpage+1);
+
+                }else{
+                    clearCoordinates(10, 5, 25, canvasSetting.height-5);
+                }
+            
             }while(countryTecla != paises.sectionQuantity);  
         }else{
             clearCoordinates(5, 5, 25, canvasSetting.height-5);
@@ -262,31 +230,62 @@ void showInsertInterface(countryDescriptor &paises, breadcrumb home){
     }
 }
 
-void showDeleteInterface(countryDescriptor paises, breadcrumb home){
+void showDeleteCountryInterface(countryDescriptor &paises, breadcrumb home){
     breadcrumb del = setBreadcrumb("Excluir", &home);
-    showBreadcrumbs(del);
-    menu exibeMenu = setMenu(10);
-    int tecla=0;
-    addMenuOption(exibeMenu, "Remover pais");
-    addMenuOption(exibeMenu, "Remover pessoa", getFirstCountry(paises)->people.quantity);
-    addMenuOption(exibeMenu, "Remover medicamento", getPersonMedicines(getFirstPerson(getCountryPeople(getFirstCountry(paises)))).quantity);
-    addMenuOption(exibeMenu, "", 0);
-    addMenuOption(exibeMenu, "VOLTAR");
-    do{
-        tecla = showMenu(exibeMenu, tecla);
+    
+    menu _menu = setMenu(9), submenu = setMenu(15);
+    addMenuOption(submenu, "Ver pessoas"); //0
+    addMenuOption(submenu, "Remover pais");//1
+    addMenuOption(submenu, "", 0);
+    addMenuOption(submenu, "VOLTAR");      //3
 
+    char pesquisa[30];
+    int opc, subopc;
+    do{
+        opc = 0;
         clearCanvas();
-        switch(tecla){
-            case 0:
-                showArvoreInterface(paises, setBreadcrumb("Pais", &del), 1, 'C');
-                break;
-            case 1:
-                showArvoreInterface(paises, setBreadcrumb("Pessoa", &del), 1, 'P');
-                break;
-            case 2:
-                showArvoreInterface(paises, setBreadcrumb("Medicamento", &del), 1, 'M');
+        showBreadcrumbs(del);
+        gotoxy(10, 6);printf("Pais: ");
+        readString(pesquisa, 16, 6, 30);
+        if(strcmp(pesquisa, "\0")){
+            do{
+                searchCountries(paises, pesquisa);
+                if(paises.sectionQuantity == 0)
+                    showToast("PAIS NAO ENCONTRADO!", TOAST_ERROR);
+                else{
+                    moveToFirstCountrySection(paises);
+                    clearMenuOptions(_menu);
+                    removeToast();
+                    while(!isEndOfCountriesSection(paises)){
+                        addMenuOption(_menu, getCurrentCountry(paises)->name);
+
+                        moveToNextCountry(paises);
+                    }
+                    addMenuOption(_menu, "", 0);
+                    addMenuOption(_menu, "VOLTAR");
+                    opc = showMenu(_menu, opc);
+
+                    if(opc != paises.sectionQuantity+1){
+                        subopc = 0;
+
+                        int popx, popy;
+                        drawPopUpWindow(30, 10, popx, popy);
+
+                        printCenter("Acoes:", popy+1);
+                        subopc = showMenu(submenu, subopc);
+                        switch(subopc){
+                            case 0:
+                                break;
+                            case 1:
+                                removeCountry(paises, getCountryByNodeInSection(paises, opc));
+                        }
+                    }
+                }
+
+            }while(paises.sectionQuantity != 0 && opc != paises.sectionQuantity+1);
         }
-    }while(tecla != 4 && !isEndOfCountries(paises));
+    }while(strcmp(pesquisa, "\0"));
+    removeToast();
 }
 
 int main(){
@@ -323,7 +322,7 @@ int main(){
                 showShowInterface(paises, home);
                 break;
             case 2:
-                showDeleteInterface(paises, home);
+                showDeleteCountryInterface(paises, home);
                 break;
         }
         

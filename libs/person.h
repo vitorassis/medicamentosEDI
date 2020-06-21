@@ -11,3 +11,4 @@ int isPersonTheLast(personDescriptor people);
 int isPersonTheFirst(personDescriptor people);
 int isEndOfPeople(personDescriptor people);
 void removePerson(personDescriptor &people, person *toRemove);
+void wipeTrashPeopleData(personDescriptor &people);

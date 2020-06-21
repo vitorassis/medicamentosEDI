@@ -317,6 +317,15 @@ struct scrollPane{
 			*/  	
 		void printAt (int x, int y, char* format, ...); 
 		
+			/**FUNCTION drawPopUpWindow
+			*		@param w					int
+			*		@param h					int
+			*		@param &popx				int => it returns setted popup x value
+			*		@param &popy				int => it returns setted popup y value
+			*
+			*		@returnType					void
+			*/
+		void drawPopUpWindow(int w, int h, int &popx, int &popy);
 	// -------------- Conio functions --------------		
 		void gotoxy(int x, int y);
 		void textcolor(int _color);
@@ -1190,6 +1199,7 @@ void dumpIntVector(int vetor[], int size){
 }
 
 void printAt(int x, int y, char* format,...){
+	fflush(stdin);
 	char* convert(unsigned int, int);
 	gotoxy(x, y);
 	
@@ -1234,6 +1244,28 @@ void printAt(int x, int y, char* format,...){
 	//Module 3: Closing argument list to necessary clean-up
 	va_end(arg); 
 }
+
+void drawPopUpWindow(int w, int h, int &popx, int &popy){
+	int x, y;
+	
+	x = (((canvasSetting.width-2)-w)/2) +1;
+	y = (((canvasSetting.height-2)-h)/2) +1;
+	
+	int x2=x+w, y2=y+h;
+	clearCoordinates(x, y, x2, y2);
+	textcolor(canvasSetting.forecolor);
+	textbackground(canvasSetting.backcolor);
+	drawLine(x, x2, y, 0, canvasSetting.border);
+	drawLine(x, x2, y2, 0, canvasSetting.border);
+	drawLine(y, y2, x, 1, canvasSetting.border);
+	drawLine(y, y2, x2, 1, canvasSetting.border);
+	textcolor(7);
+	textbackground(0);
+	
+	popx = x;
+	popy = y;
+}
+
 
 //--- conio ---------------------------------------------------------
 void gotoxy(int x, int y)

@@ -24,3 +24,4 @@ country *getCountryByNodeInSection(countryDescriptor countries, int nodes);
 void getCountriesFirstLetters(countryDescriptor countries, char letters[], int &size);
 void getCountriesFromFirstLetter(countryDescriptor &countries, char letter);
 void removeCountry(countryDescriptor &countries, country *toRemove);
+void wipeTrashCountryData(countryDescriptor &countries);

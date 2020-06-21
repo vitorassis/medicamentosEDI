@@ -146,7 +146,7 @@ int isEndOfCountries(countryDescriptor countries){
 }
 
 int isEndOfCountriesSection(countryDescriptor countries){
-	return isEndOfCountries(countries) || countries.current == countries.endSection;
+	return isEndOfCountries(countries) || countries.current == countries.endSection->next;
 }
 
 int isCountriesEmpty(countryDescriptor countries){
@@ -227,4 +227,42 @@ void removeCountry(countryDescriptor &countries, country *toRemove){
 	}
 	countries.current = toRemove->next;
 	delete(toRemove);
+}
+
+void wipeTrashCountryData(countryDescriptor &countries){
+	personDescriptor people;
+	if(countries.quantity > 0){
+		moveToFirstCountry(countries);
+		while(!isEndOfCountries(countries)){
+			if(getCountryPeople(getCurrentCountry(countries)).quantity > 0){
+				wipeTrashPeopleData(people);
+			}else{
+				removeCountry(countries, getCurrentCountry(countries));
+			}
+
+			moveToNextCountry(countries);
+		}
+	}
+}
+
+void searchCountries(countryDescriptor &countries, char search[]){
+	moveToFirstCountry(countries);
+
+	while(!checkSearch(getCurrentCountry(countries)->name, search))
+		moveToNextCountry(countries);
+	countries.startSection = getCurrentCountry(countries);
+
+	while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) 
+		moveToNextCountry(countries);
+	countries.endSection = getCurrentCountry(countries)->prev;
+	
+	moveToFirstCountrySection(countries);
+
+	countries.sectionQuantity = 0;
+
+	while(!isEndOfCountriesSection(countries)){ 
+		countries.sectionQuantity++;
+		moveToNextCountry(countries);
+	}
+	moveToFirstCountrySection(countries);
 }
