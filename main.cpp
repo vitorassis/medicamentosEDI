@@ -5,7 +5,7 @@
 #include "libs/libs.h"
 #include "data/loadData.cpp"
 
-#define version "0.1.5"
+#define version "0.2.0"
 
 void showArvoreInterface(countryDescriptor paises, breadcrumb show){
     showBreadcrumbs(setBreadcrumb("Arvore", &show));
