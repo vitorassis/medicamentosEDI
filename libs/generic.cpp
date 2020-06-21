@@ -6,5 +6,6 @@ int checkSearch(char string[], char search[]){
 	for(int i = 0; i< len && equal; i++)
 		equal *= toupper(string[i]) == toupper(search[i]);
 	
+	printf("PAIS: %s", string);
 	return equal;
 }

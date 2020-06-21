@@ -248,13 +248,15 @@ void wipeTrashCountryData(countryDescriptor &countries){
 void searchCountries(countryDescriptor &countries, char search[]){
 	moveToFirstCountry(countries);
 
-	while(!checkSearch(getCurrentCountry(countries)->name, search))
+	while(!checkSearch(getCurrentCountry(countries)->name, search)){
 		moveToNextCountry(countries);
-	countries.startSection = getCurrentCountry(countries);
+		printf("  -");
+	}countries.startSection = getCurrentCountry(countries);
 
-	while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) 
+	while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) {
 		moveToNextCountry(countries);
-	countries.endSection = getCurrentCountry(countries)->prev;
+		printf("  + ");
+	}countries.endSection = getCurrentCountry(countries)->prev;
 	
 	moveToFirstCountrySection(countries);
 
