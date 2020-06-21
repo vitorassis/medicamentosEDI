@@ -1,7 +1,7 @@
 medicineDescriptor createMedicineDescriptor();
 medicineDescriptor getPersonMedicines(person *_person);
 medicine *createMedicine(char name[]);
-void insertMedicine(country *_country, char name[]);
+void insertMedicine(person *_person, char name[], char last_buy[]);
 medicine *getFirstMedicine(medicineDescriptor medicines);
 medicine *getCurrentMedicine(medicineDescriptor medicines);
 medicine *getNextMedicine(medicineDescriptor medicines);

@@ -1,7 +1,7 @@
 personDescriptor createPersonDescriptor();
 personDescriptor getCountryPeople(country *_country);
 person *createPerson(char code[], char gender, char last_buy[]);
-void insertPerson(medicine *_medicine, char code[], char gender, char last_buy[]);
+void insertPerson(country *_country, char code[], char gender);
 person *getFirstPerson(personDescriptor people);
 person *getCurrentPerson(personDescriptor people);
 person *getNextPerson(personDescriptor people);
