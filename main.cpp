@@ -235,9 +235,10 @@ void showDeleteMedicineInterface(countryDescriptor &paises, person *usuario, bre
     addMenuOption(submenu, "Remover medicamento");//0
     addMenuOption(submenu, "", 0);
     addMenuOption(submenu, "VOLTAR");      //2
-    int opc, subopc;
+    int opc=0, subopc;
     medicineDescriptor medicines = getPersonMedicines(usuario);
     do{
+        moveToFirstMedicine(medicines); 
         clearMenuOptions(_menu);
         clearCanvas();
         showBreadcrumbs(del);
