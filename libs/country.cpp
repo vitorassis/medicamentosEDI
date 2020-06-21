@@ -248,23 +248,29 @@ void wipeTrashCountryData(countryDescriptor &countries){
 void searchCountries(countryDescriptor &countries, char search[]){
 	moveToFirstCountry(countries);
 
-	while(!checkSearch(getCurrentCountry(countries)->name, search)){
-		moveToNextCountry(countries);
-		printf("  -");
-	}countries.startSection = getCurrentCountry(countries);
-
-	while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) {
-		moveToNextCountry(countries);
-		printf("  + ");
-	}countries.endSection = getCurrentCountry(countries)->prev;
-	
-	moveToFirstCountrySection(countries);
-
-	countries.sectionQuantity = 0;
-
-	while(!isEndOfCountriesSection(countries)){ 
-		countries.sectionQuantity++;
+	while(!isEndOfCountries(countries) && !checkSearch(getCurrentCountry(countries)->name, search)){
 		moveToNextCountry(countries);
 	}
-	moveToFirstCountrySection(countries);
+	if(checkSearch(getCurrentCountry(countries)->name, search)){
+		countries.startSection = getCurrentCountry(countries);
+
+		while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) {
+			moveToNextCountry(countries);
+		}countries.endSection = getCurrentCountry(countries)->prev;
+		
+		moveToFirstCountrySection(countries);
+
+		countries.sectionQuantity = 0;
+
+		while(!isEndOfCountriesSection(countries)){ 
+			countries.sectionQuantity++;
+			moveToNextCountry(countries);
+		}
+		moveToFirstCountrySection(countries);
+	}
+	else{
+		countries.endSection = countries.startSection = NULL;
+		countries.sectionQuantity = 0;
+	}
+	
 }
