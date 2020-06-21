@@ -241,8 +241,9 @@ void wipeTrashCountryData(countryDescriptor &countries){
 			if(getCountryPeople(getCurrentCountry(countries)).quantity == 0){
 				removeCountry(countries, getCurrentCountry(countries));
 			}
-
-			moveToNextCountry(countries);
+			
+			if(!isEndOfCountries(countries))
+				moveToNextCountry(countries);
 		}
 	}
 }

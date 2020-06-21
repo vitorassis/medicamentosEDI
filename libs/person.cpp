@@ -107,11 +107,10 @@ void wipeTrashPeopleData(personDescriptor &people){
 		moveToFirstPerson(people);
 		while(!isEndOfPeople(people)){
 			if(getPersonMedicines(getCurrentPerson(people)).quantity == 0){
-                showToast("Entrou!");
-                getch();
 				removePerson(people, getCurrentPerson(people));
             }
-			moveToNextPerson(people);
+            if(!isEndOfPeople(people))
+			    moveToNextPerson(people);
 		}
 	}
 

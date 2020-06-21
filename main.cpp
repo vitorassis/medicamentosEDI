@@ -141,12 +141,145 @@ void showArvoreInterface(countryDescriptor paises, breadcrumb show){
     clearCanvas();
 }
 
+void showSearchCountryInterface(countryDescriptor paises, breadcrumb rel){
+    menu _menu = setMenu(9), submenu = setMenu(15);
+
+    char pesquisa[30];
+    int opc, subopc;
+    do{
+        opc = 0;
+        clearCanvas();
+        showBreadcrumbs(setBreadcrumb("Buscar Pais", &rel));
+        gotoxy(10, 6);printf("Pais: ");
+        readString(pesquisa, 16, 6, 30);
+        if(strcmp(pesquisa, "\0")){
+            do{
+                searchCountries(paises, pesquisa);
+                if(paises.sectionQuantity == 0)
+                    showToast("PAIS NAO ENCONTRADO!", TOAST_ERROR);
+                else{
+                    moveToFirstCountrySection(paises);
+                    clearMenuOptions(_menu);
+                    removeToast();
+                    while(!isEndOfCountriesSection(paises)){
+                        addMenuOption(_menu, getCurrentCountry(paises)->name);
+
+                        moveToNextCountry(paises);
+                    }
+                    addMenuOption(_menu, "", 0);
+                    addMenuOption(_menu, "VOLTAR");
+                    opc = showMenu(_menu, opc);
+
+                    if(opc != paises.sectionQuantity+1){
+                        country *aux;
+                        medicineDescriptor remedios, remAux;
+
+                        showToast("GERANDO RELATORIO...", TOAST_WARNING);   
+
+                        FILE *arq = fopen("rel2.txt", "w");
+                        personDescriptor pessoas;
+                        paises.current = getCountryByNodeInSection(paises, opc);
+                        aux = createCountry("aux");
+                        insertPerson(aux, "000-00-0000", 'm');
+
+                        fprintf(arq, "%s\n", getCurrentCountry(paises));
+                        
+                        pessoas = getCountryPeople(getCurrentCountry(paises));
+                        while(!isEndOfPeople(pessoas)){
+                            remedios = getPersonMedicines(getCurrentPerson(pessoas));
+                            while(!isEndOfMedicines(remedios)){
+                                insertMedicine(getCurrentPerson(getCountryPeople(aux)), getCurrentMedicine(remedios)->name, getCurrentMedicine(remedios)->last_buy);
+
+                                moveToNextMedicine(remedios);
+                            }
+
+                            moveToNextPerson(pessoas);
+                        } 
+                        remAux = getPersonMedicines(getCurrentPerson(getCountryPeople(aux)));
+                        while(!isEndOfMedicines(remAux)){
+                            fprintf(arq, "\t%s\n", getCurrentMedicine(remAux)->name);
+
+                            moveToNextMedicine(remAux);
+                        }
+
+                        fprintf(arq, "\n\n");
+                        
+
+                        fclose(arq);
+                        showToast("RELATORIO FINALIZADO!", TOAST_SUCCESS);
+
+                    }
+                }
+
+            }while(paises.sectionQuantity != 0 && opc != paises.sectionQuantity+1);
+        }
+    }while(strcmp(pesquisa, "\0"));
+    removeToast();
+}
+
+void showRelatorioInterface(countryDescriptor paises, breadcrumb show){
+    FILE *arq;
+    personDescriptor pessoas;
+    breadcrumb rel = setBreadcrumb("Relatorio", &show);
+    showBreadcrumbs(rel);
+    menu exibeMenu = setMenu(10);
+    int tecla=0;
+    addMenuOption(exibeMenu, "Usuarios por sexo por pais (rel1)");
+    addMenuOption(exibeMenu, "Medicamento por pais (rel2)");
+    addMenuOption(exibeMenu, "", 0);
+    addMenuOption(exibeMenu, "VOLTAR");
+    do{
+        tecla = showMenu(exibeMenu, tecla);
+
+        clearCanvas();
+        switch(tecla){
+            case 0:
+                arq = fopen("rel1.txt", "w");
+                
+                showToast("GERANDO RELATORIO...", TOAST_WARNING);   
+
+                moveToFirstCountry(paises);
+                while(!isEndOfCountries(paises)){
+
+                    fprintf(arq, "%s\n", getCurrentCountry(paises));
+                    fprintf(arq, "\tFeminino:\n");
+                    
+                    pessoas = getCountryPeople(getCurrentCountry(paises));
+                    moveToFirstPerson(pessoas);
+                    while(!isEndOfPeople(pessoas)){
+                        if(toupper(getCurrentPerson(pessoas)->gender) == 'F')
+                            fprintf(arq, "\t\t%s\n", getCurrentPerson(pessoas)->code);
+                        moveToNextPerson(pessoas);
+                    } 
+
+                    fprintf(arq, "\tMasculino:\n");
+                    moveToFirstPerson(pessoas);
+                    while(!isEndOfPeople(pessoas)){
+                        if(toupper(getCurrentPerson(pessoas)->gender) == 'M')
+                            fprintf(arq, "\t\t%s\n", getCurrentPerson(pessoas)->code);
+                        moveToNextPerson(pessoas);
+                    } 
+
+                    fprintf(arq, "\n\n");
+                    moveToNextCountry(paises);
+                }
+
+                fclose(arq);
+                showToast("RELATORIO FINALIZADO!", TOAST_SUCCESS);
+                break;
+            case 1:
+                showSearchCountryInterface(paises, rel);
+                break;
+        }
+    }while(tecla != 3);
+}
+
 void showShowInterface(countryDescriptor paises, breadcrumb home){
     breadcrumb show = setBreadcrumb("Exibir", &home);
     showBreadcrumbs(show);
     menu exibeMenu = setMenu(10);
     int tecla=0;
-    addMenuOption(exibeMenu, "Gerar Relatorio", 0);
+    addMenuOption(exibeMenu, "Gerar Relatorio");
     addMenuOption(exibeMenu, "Visualizar arvore");
     addMenuOption(exibeMenu, "", 0);
     addMenuOption(exibeMenu, "VOLTAR");
@@ -156,6 +289,7 @@ void showShowInterface(countryDescriptor paises, breadcrumb home){
         clearCanvas();
         switch(tecla){
             case 0:
+                showRelatorioInterface(paises, show);
                 break;
             case 1:
                 showArvoreInterface(paises, show);
