@@ -253,11 +253,8 @@ void searchCountries(countryDescriptor &countries, char search[]){
 	while(!isEndOfCountries(countries) && !checkSearch(getCurrentCountry(countries)->name, search)){
 		moveToNextCountry(countries);
 		showToast("DBG 01");
-		getch();
 	}
-	showToast("DBG 02");
-	getch();
-	if(checkSearch(getCurrentCountry(countries)->name, search)){
+	if(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)){
 		showToast("DBG 03");
 		getch();
 		countries.startSection = getCurrentCountry(countries);
