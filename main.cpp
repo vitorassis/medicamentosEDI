@@ -412,7 +412,7 @@ void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcr
     addMenuOption(submenu, "Remover pessoa");//1
     addMenuOption(submenu, "", 0);
     addMenuOption(submenu, "VOLTAR");      //3
-    int opc, subopc, pagenum = 0, peoplePerPage = 15, peopleinPage=0;
+    int opc, subopc, pagenum = 0, peoplePerPage = 10, peopleinPage=0;
     personDescriptor people;
     do{
         people = getCountryPeople(pais);
@@ -440,12 +440,13 @@ void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcr
         addMenuOption(_menu, "VOLTAR");
 
         opc = showMenu(_menu, opc);
-        if(opc != peopleinPage+2){
-            if(opc ==  peopleinPage)
-                pagenum --;
-            else if(opc ==  peopleinPage+1)
-                pagenum++;
-
+        if(opc < peopleinPage+1){
+            if(getCountryPeople(pais).quantity > peoplePerPage && (opc ==  peopleinPage-1 || opc ==  peopleinPage) ){
+                if(opc ==  peopleinPage-1)
+                    pagenum --;
+                else if(opc ==  peopleinPage)
+                    pagenum++;
+            }
             else{
                 subopc = 0;
 
@@ -468,8 +469,7 @@ void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcr
                 removePopUpWindow(30, 10);
             }
         }
-
-    }while(getCountryPeople(pais).quantity > 0 && opc != peopleinPage+2);
+    }while(getCountryPeople(pais).quantity > 0 && opc < peopleinPage+1);
 }
 
 void showDeleteCountryInterface(countryDescriptor &paises, breadcrumb home){

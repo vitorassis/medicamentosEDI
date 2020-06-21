@@ -184,7 +184,7 @@ void getCountriesFromFirstLetter(countryDescriptor &countries, char letter){
 
 	while(!isEndOfCountries(countries) && letter == getCurrentCountry(countries)->name[0]) 
 		moveToNextCountry(countries);
-	countries.endSection = getCurrentCountry(countries)->prev;
+	countries.endSection = !isEndOfCountries(countries) ? getCurrentCountry(countries)->prev : getLastCountry(countries);
 	
 	moveToFirstCountrySection(countries);
 
@@ -259,10 +259,14 @@ void searchCountries(countryDescriptor &countries, char search[]){
 		showToast("PAIS ENCONTRADO!", TOAST_SUCCESS);
 		
 		countries.startSection = getCurrentCountry(countries);
+		gotoxy(10,9);printf("START: %s", countries.startSection);
 		
 		while(!isEndOfCountries(countries) && checkSearch(getCurrentCountry(countries)->name, search)) {
 			moveToNextCountry(countries);
-		}countries.endSection = getCurrentCountry(countries)->prev;
+		}
+		countries.endSection = !isEndOfCountries(countries) ? getCurrentCountry(countries)->prev : getLastCountry(countries);
+
+		gotoxy(10,10);printf("END: %s", countries.endSection);
 		
 		moveToFirstCountrySection(countries);
 
