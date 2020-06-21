@@ -234,9 +234,11 @@ void wipeTrashCountryData(countryDescriptor &countries){
 	if(countries.quantity > 0){
 		moveToFirstCountry(countries);
 		while(!isEndOfCountries(countries)){
-			if(getCountryPeople(getCurrentCountry(countries)).quantity > 0){
-				wipeTrashPeopleData(people);
-			}else{
+			people = getCurrentCountry(countries)->people;
+			wipeTrashPeopleData(people);
+			getCurrentCountry(countries)->people = people;
+
+			if(getCountryPeople(getCurrentCountry(countries)).quantity == 0){
 				removeCountry(countries, getCurrentCountry(countries));
 			}
 

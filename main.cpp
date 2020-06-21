@@ -243,6 +243,7 @@ void showDeleteMedicineInterface(countryDescriptor &paises, person *usuario, bre
         clearCanvas();
         showBreadcrumbs(del);
         printCenter("Medicamento:", 7);
+            gotoxy(30, 10);printf("QTD: %d", medicines.quantity);
         while(!isEndOfMedicines(medicines)){
             addMenuOption(_menu, getCurrentMedicine(medicines)->name);
             moveToNextMedicine(medicines);
@@ -278,8 +279,10 @@ void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcr
     addMenuOption(submenu, "", 0);
     addMenuOption(submenu, "VOLTAR");      //3
     int opc, subopc, pagenum = 0, peoplePerPage = 15, peopleinPage=0;
-    personDescriptor people = getCountryPeople(pais);
+    personDescriptor people;
     do{
+        people = getCountryPeople(pais);
+        people.current = getPersonByNode(people, peoplePerPage*pagenum);
         peopleinPage=0;
         clearMenuOptions(_menu);
         opc = 0;
@@ -327,7 +330,6 @@ void showDeletePersonInterface(countryDescriptor &paises, country* pais, breadcr
                         wipeTrashCountryData(paises);
                         break;
                 }
-                people.current = getPersonByNode(people, peoplePerPage*pagenum);
 
                 removePopUpWindow(30, 10);
             }

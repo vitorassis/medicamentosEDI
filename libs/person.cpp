@@ -103,15 +103,16 @@ void removePerson(personDescriptor &people, person *toRemove){
 }
 
 void wipeTrashPeopleData(personDescriptor &people){
-    medicineDescriptor medicines;
     if(people.quantity > 0){
-        moveToFirstPerson(people);
-        while(!isEndOfPeople(people)){
-            if(getPersonMedicines(getCurrentPerson(people)).quantity == 0){
-                removePerson(people, getCurrentPerson(people));
+		moveToFirstPerson(people);
+		while(!isEndOfPeople(people)){
+			if(getPersonMedicines(getCurrentPerson(people)).quantity == 0){
+                showToast("Entrou!");
+                getch();
+				removePerson(people, getCurrentPerson(people));
             }
+			moveToNextPerson(people);
+		}
+	}
 
-            moveToNextPerson(people);
-        }
-    }
 }
