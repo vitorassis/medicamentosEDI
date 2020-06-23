@@ -217,6 +217,49 @@ void showSearchCountryInterface(countryDescriptor paises, breadcrumb rel){
     removeToast();
 }
 
+void showSearchMedicineInterface(countryDescriptor paises, breadcrumb rel){
+    menu _menu = setMenu(9), submenu = setMenu(15);
+
+    char pesquisa[30];
+    int opc, subopc;
+    do{
+        opc = 0;
+        clearCanvas();
+        showBreadcrumbs(setBreadcrumb("Buscar Medicamento", &rel));
+        gotoxy(10, 6);printf("Remedio: ");
+        readString(pesquisa, 19, 6, 30);
+        if(strcmp(pesquisa, "\0")){
+            FILE *file = fopen("rel3.txt", "w");
+            country *aux = createCountry("aux");
+            fprintf(file, "%s\n", pesquisa);
+
+            moveToFirstCountry(paises);
+            while(!isEndOfCountries(paises)){
+                personDescriptor pessoas = getCountryPeople(getCurrentCountry(paises));
+                while(!isEndOfPeople(pessoas)){
+                    medicineDescriptor remedios = getPersonMedicines(getCurrentPerson(pessoas));
+                    while(!isEndOfMedicines(remedios) && stricmp(pesquisa, getCurrentMedicine(remedios)->name) != 0)
+                        moveToNextMedicine(remedios);
+                    if(stricmp(pesquisa, getCurrentMedicine(remedios)->name) == 0)
+                        insertPerson(aux, getCurrentPerson(pessoas)->code, getCurrentPerson(pessoas)->gender);
+                    moveToNextPerson(pessoas);
+                }
+                moveToNextCountry(paises);
+            }
+
+            personDescriptor relatorio = getCountryPeople(aux);
+            while(!isEndOfPeople(relatorio)){
+                fprintf(file, "\t%s\n", getCurrentPerson(relatorio)->code);
+                moveToNextPerson(relatorio);
+            }
+
+            fclose(file);
+        }
+    }while(strcmp(pesquisa, "\0"));
+    removeToast();
+}
+
+
 void showRelatorioInterface(countryDescriptor paises, breadcrumb show){
     FILE *arq;
     personDescriptor pessoas;
@@ -226,6 +269,7 @@ void showRelatorioInterface(countryDescriptor paises, breadcrumb show){
     int tecla=0;
     addMenuOption(exibeMenu, "Usuarios por sexo por pais (rel1)");
     addMenuOption(exibeMenu, "Medicamento por pais (rel2)");
+    addMenuOption(exibeMenu, "Usuarios por medicamento (rel3)");
     addMenuOption(exibeMenu, "", 0);
     addMenuOption(exibeMenu, "VOLTAR");
     do{
@@ -270,8 +314,11 @@ void showRelatorioInterface(countryDescriptor paises, breadcrumb show){
             case 1:
                 showSearchCountryInterface(paises, rel);
                 break;
+            case 2:
+                showSearchMedicineInterface(paises, rel);
+                break;
         }
-    }while(tecla != 3);
+    }while(tecla != 4);
 }
 
 void showShowInterface(countryDescriptor paises, breadcrumb home){
